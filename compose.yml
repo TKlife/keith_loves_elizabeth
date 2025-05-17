@@ -1,0 +1,10 @@
+services:
+  keith_loves_elizabeth:
+    image: kbush23/keith_loves_elizabeth
+    env_file:
+      ./.env
+    ports:
+      - 3000:3000
+      - 3001:3001
+    volumes:
+      - ./resources:/app/resources

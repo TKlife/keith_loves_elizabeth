@@ -43,12 +43,18 @@ if (process.env.ENVIRONMENT === 'production') {
   } else {
     console.error('Cert File and Key File not set.')
   }
-} else {
+} else if (process.env.ENVIRONMENT === 'development') {
   const httpPort = process.env.HTTP_PORT ? parseInt(process.env.HTTP_PORT) : 3000
   if (httpPort) {
     const httpServer = http.createServer(app);
     httpServer.on('error', (err: any) => onError(err, httpPort));
     httpServer.on('listening', () => console.log('Listening on port [DEV] ' + httpPort));
     httpServer.listen(httpPort);
+
+    const httpsPort = process.env.HTTPS_PORT ? parseInt(process.env.HTTPS_PORT) : 3001
+    const httpsServer = http.createServer((req, res) => {
+      res.writeHead(301, { Location: "http://" + req.headers.host + req.url });
+      res.end();
+    }).listen(httpsPort);
   }
 }

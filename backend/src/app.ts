@@ -20,13 +20,14 @@ app.use('/assets', express.static(path.join('backend/assets')));
 app.use('/resource', express.static(path.join(__dirname, "www")))
 app.use('/event', express.static(path.join(__dirname, "www")))
 app.use((req, res, next) => {
-  const fullPath = req.path
-  const parts = getPathParts(fullPath)
+  const requestPath = req.path
+  const parts = getPathParts(requestPath)
   console.log(parts)
   if (parts[0] === 'event' && customRoutes.has(parts[1])) {
     console.log('event')
     res.sendFile(path.join(__dirname, "www", "index.html"))
   } else {
+    const fullPath = parts.join('/')
     console.log('redirect: ' + fullPath)
     if (zolaRoutes.has(fullPath)) {
       res.redirect('https://www.zola.com/wedding/keithloveselizabeth/' + fullPath)

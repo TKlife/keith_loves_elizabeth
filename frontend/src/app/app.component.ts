@@ -9,5 +9,5 @@ import { RouterOutlet } from '@angular/router';
   styleUrl: './app.component.scss'
 })
 export class AppComponent {
-  title = 'frontend';
+  title = 'Elizabeth Bello and Keith Bush\'s Wedding Website';
 }

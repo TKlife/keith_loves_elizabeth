@@ -1,0 +1,36 @@
+@import 'tailwindcss';
+
+@font-face {  
+  font-family: 'August Roma';  
+  font-style: normal;
+  font-display: swap;  
+  src: url("../public/fonts/augustromaserif.otf") format("opentype");
+}
+
+@font-face {  
+  font-family: 'August Free';  
+  font-style: normal; 
+  font-display: swap;  
+  src: url("../public/fonts/August_free.ttf") format("opentype");
+}
+
+@theme {
+  --color-periwinkle-500: #caccff;
+  --color-accentGreen-500: #12b56a;
+  --color-eggplant-500: #562F64;
+  --color-accentOrange-500: #EF4723;
+
+  --font-default: 'Libre Baskerville';
+  --font-august-roma: 'August Roma';
+  --font-august-free: 'August Free';
+
+  --spacing-0.5: 0.125rem
+}
+
+@layer {
+  .bg-image-container-center {
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+  }
+}

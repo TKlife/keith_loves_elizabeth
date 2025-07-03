@@ -19,8 +19,7 @@ const onError = (error: {code: any, syscall: any}, port?: number) => {
       throw error;
   }
 }
-//change21
-//change2
+console.log('here')
 
 if (process.env.ENVIRONMENT === 'production') {
   const httpsPort: number = process.env.HTTPS_PORT ? parseInt(process.env.HTTPS_PORT) : 3000;

@@ -1,0 +1,16 @@
+<div class="h-full w-full flex flex-col gap-2">
+  <div #previewContainer class="h-full w-full relative overflow-hidden touch-none" (pointerdown)="onPointerDown($event)">
+    @for (pic of onScreen; track $index) {
+      <app-picture-preview [src]="pic.src" [style.transform]="'translate(' + pic.translation + 'px, 0px) scale('+ pic.scale + ',' + pic.scale + ')'"></app-picture-preview>  
+    }
+    <i class="fa fa-angle-left absolute left-4 top-1/2 -translate-y-1/2 text-3xl text-white cursor-pointer"  (click)="scrollByCount($event, -1)"></i>
+    <i class="fa fa-angle-right absolute right-4 top-1/2 -translate-y-1/2 text-3xl text-white cursor-pointer" (click)="scrollByCount($event, 1)"></i>
+  </div>
+  <div class="relative h-6 left-1/2 overflow-visible">
+    @for (marker of positionMarkers; let i = $index; track $index) {
+      <div class="position-marker-container" [ngClass]="{'hidden': marker.scale === 0}" [style.transform]="'translate(' + marker.translation + '%, 0px)'" (click)="this.scrollByPositionMarker($event, i)">
+        <div class="position-marker" [style.transform]="'scale(' + marker.scale + ')'" ></div>
+      </div>
+    }
+  </div>
+</div> 

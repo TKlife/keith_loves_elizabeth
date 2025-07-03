@@ -1,3 +1,19 @@
-<div class="h-full w-full bg-periwinkle-500 flex flex-col items-center justify-center">
+<!-- <div class="h-full w-full bg-periwinkle-500 flex flex-col items-center justify-center">
   <span class="coming-soon text-green-500 whitespace-nowrap text-2xl uppercase tracking-widest font-semibold">Check back soon...</span>
+</div> -->
+
+<div class="h-full w-full flex flex-col gap-2">
+  <!-- <div class="w-full grid relative" style="grid-template-columns: 50% 50%;">
+    <div class="tab" [ngClass]="{'selected': selectedTab === 'upload'}" (click)="selectedTab = 'upload'">Upload</div>
+    <div class="tab" [ngClass]="{'selected': selectedTab === 'gallary'}" (click)="selectedTab = 'gallary'">Gallery</div>
+    <div class="absolute bottom-0 left-0 h-0.5 w-1/2 bg-accentGreen-500" [ngClass]="{'left-1/2': selectedTab === 'gallary'}" style="transition: left 200ms ease-in-out"></div>
+  </div> -->
+  <div class="w-full grow overflow-hidden">
+    @if (selectedTab() === 'upload') {
+      <app-upload></app-upload>
+    } @else {
+      <app-album></app-album>
+    }
+  </div>
+  <!-- <app-upload></app-upload> -->
 </div>

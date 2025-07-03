@@ -1,0 +1,16 @@
+<div class="relative h-full w-full flex justify-center overflow-auto">
+  <div #albumContainer class="w-full grid">
+    @for (pic of pictures; track $index) {
+      <img [src]="pic.thumbnailSrc" class="w-full h-full object-cover object-center p-1" (click)="this.marqueeOpen = true">
+    }
+  </div>
+  @if (marqueeOpen) {
+    <div class="absolute top-0 left-0 h-full w-full overflow-hidden" (click)="this.marqueeOpen = false">
+      <div class="absolute top-0 left-0 h-full w-full backdrop-blur-sm" >
+      </div>
+      <div class="h-full w-full p-4 xl:p-8">
+        <app-marquee [pics]="pictures"></app-marquee>
+      </div>
+    </div>
+  }
+</div>

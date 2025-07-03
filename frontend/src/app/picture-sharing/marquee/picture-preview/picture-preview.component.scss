@@ -1,0 +1,9 @@
+@import '../../../../tailwind-theme.css';
+
+:host {
+  @apply absolute block h-full w-full top-0 left-0;
+}
+
+.picture-preview {
+  @apply h-full w-full;
+}

@@ -1,13 +1,10 @@
-@import 'tailwindcss';
-
-@theme {
-  --color-periwinkle-500: #caccff;
-  --color-green-500: #12b56a;
-}
+@import './tailwind-theme.css';
 
 html, body {
   height: 100%;
   width: 100%;
+  overflow: hidden;
+  font-family: 'Libre Baskerville';
 }
 
 body {
@@ -19,3 +16,11 @@ body {
 html, body { height: 100%; }
 
 body { margin: 0; }
+
+button {
+  @apply py-1 px-2 bg-accentGreen-500 text-periwinkle-500 font-august-roma tracking-wide uppercase text-sm;
+
+  &.danger {
+    @apply bg-red-700;
+  }
+}

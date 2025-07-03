@@ -1,1 +1,36 @@
-<router-outlet></router-outlet>
+<div class="flex flex-col w-full h-full overflow-hidden bg-periwinkle-500">
+  <div class="grid h-14 bg-accentGreen-500 px-4 shrink-0" style="grid-template-columns: 1fr auto 1fr">
+    <div class="self-center text-eggplant-500" (click)="navMenu = true">
+      <i class="fa fa-bars text-lg"></i>
+    </div>
+    <div class="website-logo "></div>
+    <div class="self-center text-periwinkle-500 justify-self-end">
+      @switch (menuBarExtra) {
+        @case ('add-picture') {
+          <app-picture-sharing-menu-option></app-picture-sharing-menu-option>
+        }
+      }
+    </div>
+  </div>
+  <div class="grow w-full overflow-auto">
+    <router-outlet></router-outlet>
+  </div>
+</div>
+@if (navMenu) {
+  <div class="absolute h-full w-full top-0 left-0 bg-periwinkle-500 border-r-1 border-r-solid border-r-eggplant-500 flex flex-col" [@slideIn]>
+    <div class="grid h-14 bg-accentGreen-500 px-4 shrink-0" style="grid-template-columns: 1fr auto 1fr">
+      <div class="self-center text-eggplant-500" (click)="navMenu = false">
+        <i class="fa fa-bars text-lg"></i>
+      </div>
+      <div class="website-logo "></div>
+      <div class="self-center text-periwinkle-500 justify-self-end">
+        <!-- <i class="fa fa-angle-left text-eggplant-500 text-lg" (click)="navMenu = false"></i> -->
+      </div>
+    </div>
+    <div class="flex flex-col grow items-center gap-4 font-bold pt-8 px-4">
+      <a class="menu-option" [routerLink]="['']" [routerLinkActive]="'active'">Home</a>
+      <a class="menu-option" [routerLink]="['/pictures']" [routerLinkActive]="'active'">Pictures</a>
+      <a class="menu-option" href="/FAQ"  [routerLinkActive]="'active'">FAQ</a>
+    </div>
+  </div>
+}

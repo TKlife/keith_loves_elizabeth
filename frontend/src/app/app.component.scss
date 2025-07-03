@@ -1,0 +1,18 @@
+@import '../tailwind-theme.css';
+
+.website-logo {
+  background-image: url('../../public/WeddingMenuLogo2025.png');
+  background-repeat: no-repeat;
+  background-size: contain;
+  background-position: center;
+
+  @apply w-12 h-full;
+}
+
+.menu-option {
+  @apply font-august-free text-2xl;
+
+  &.active {
+    @apply italic font-bold tracking-wider text-accentGreen-500;
+  }
+}

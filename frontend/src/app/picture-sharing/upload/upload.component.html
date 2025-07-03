@@ -1,0 +1,21 @@
+<div class="h-full w-full flex flex-col items-center">
+  <div class="w-full grow">
+    @if (uploadedPics.length === 0) {
+      <div class="p-4 w-full h-full">
+        <div class="border-dashed border-1 border-gray-400 flex justify-center items-center w-full h-full rounded-sm" (click)="onAddPictures(fileInput)" (touch)="onAddPictures(fileInput)">
+          <a>Upload photos</a>
+        </div>
+      </div>
+    } @else {
+      <app-marquee [pics]="uploadedPics"></app-marquee>
+    }
+  </div>
+  <div class="pb-2 px-2 flex flex-row-reverse w-full justify-between">
+    <div class="flex gap-2">
+      <button class="danger" (click)="OnCancelUpload()">Cancel</button>
+      <button (click)="onUpload()">Upload</button>
+    </div>
+    <button (click)="onAddPictures(fileInput)">Add Photos</button>
+  </div>
+</div>
+<input #fileInput class="hidden" type="file" multiple="true" (change)="onFiles(fileInput)">

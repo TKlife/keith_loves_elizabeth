@@ -1,10 +1,23 @@
 {
+  "scripts": {
+    "watch": "nodemon -e js,ts --watch ./src --exec \"npx tsc;\"",
+    "start-server": "nodemon --env-file=./.env ./dist/server.js"
+  },
   "dependencies": {
+    "@aws-sdk/client-s3": "^3.832.0",
+    "@aws-sdk/s3-request-presigner": "^3.832.0",
     "body-parser": "^2.2.0",
-    "express": "^5.1.0"
+    "express": "^5.1.0",
+    "fs": "^0.0.1-security",
+    "image-thumbnail": "^1.0.17",
+    "multer": "^2.0.1",
+    "sharp": "^0.34.2"
   },
   "devDependencies": {
     "@types/express": "^5.0.1",
+    "@types/image-thumbnail": "^1.0.4",
+    "@types/multer": "^1.4.13",
+    "nodemon": "^3.1.10",
     "typescript": "^5.8.3"
   }
 }

@@ -2,12 +2,16 @@ import express, { Application } from 'express'
 import bodyParser from 'body-parser'
 import path from 'path'
 import { IncomingMessage, ServerResponse } from 'http'
+import { helpRoutes } from './routes/help-routes'
+import { pictureRoutes } from './routes/pictures-routes'
 
 const app: Application = express()
 const zolaRoutes = new Set<string>(['faq', 'travel', 'rsvp', 'photo'])
 const customRoutes = new Set<string>(['pictures'])
-
-process.env.ENVIRONMENT === 'development'
+const allowedOrigins: { [key: string]: Set<string> } = {
+  'development': new Set<string>(['http://localhost:4200', 'http://localhost:3000']),
+  'production': new Set<string>(['https://www.keithloveselizabeth.com'])
+}
 
 app.use(bodyParser.json());
 app.use((req, res, next) => {
@@ -15,24 +19,28 @@ app.use((req, res, next) => {
   next();
 })
 
-
 app.use('/assets', express.static(path.join('backend/assets')));
 app.use('/resource', express.static(path.join(__dirname, "www")))
 app.use('/event', express.static(path.join(__dirname, "www")))
+
+app.use('/api/v1/help', helpRoutes)
+app.use('/api/v1/pictures', pictureRoutes)
+
 app.use((req, res, next) => {
   const requestPath = req.path
   const parts = getPathParts(requestPath)
-  console.log(parts)
-  if (parts[0] === 'event' && customRoutes.has(parts[1])) {
-    console.log('event')
-    res.sendFile(path.join(__dirname, "www", "index.html"))
-  } else {
-    const fullPath = parts.join('/')
-    console.log('redirect: ' + fullPath)
-    if (zolaRoutes.has(fullPath)) {
-      res.redirect('https://www.zola.com/wedding/keithloveselizabeth/' + fullPath)
+  if (parts[0] != 'api') {
+    if (parts[0] === 'event' && customRoutes.has(parts[1])) {
+      console.log('event')
+      res.sendFile(path.join(__dirname, "www", "index.html"))
     } else {
-      res.redirect('https://www.zola.com/wedding/keithloveselizabeth')
+      const fullPath = parts.join('/')
+      console.log('redirect: ' + fullPath)
+      if (zolaRoutes.has(fullPath)) {
+        res.redirect('https://www.zola.com/wedding/keithloveselizabeth/' + fullPath)
+      } else {
+        res.redirect('https://www.zola.com/wedding/keithloveselizabeth')
+      }
     }
   }
 })
@@ -44,14 +52,17 @@ function getPathParts(path: string) {
 }
 
 function setResponseHeaders(req: IncomingMessage, res: ServerResponse) {
-  let origin = 'https://www.keithloveselizabeth.com'
-  if (process.env.ENVIRONMENT === 'development') {
-    origin = 'http://localhost:4200'
-  } else if (req.headers.origin === 'https://www.keithloveselizabeth.com') {
-    origin = 'https://www.keithloveselizabeth.com'
+  
+  let origin: string | undefined = undefined
+  if (process.env.ENVIRONMENT && req.headers.origin) {
+    const allowedOriginSet = allowedOrigins[process.env.ENVIRONMENT]
+    if (allowedOriginSet.has(req.headers.origin)) {
+      origin = req.headers.origin
+    }
   }
-  // console.log(origin)
-  res.setHeader('Access-Control-Allow-Origin', origin)
+  if (origin) {
+    res.setHeader('Access-Control-Allow-Origin', origin)
+  }
   res.setHeader(
     'Access-Control-Allow-Headers',
     'Origin, X-Requested-With, Content-Type, Accept'

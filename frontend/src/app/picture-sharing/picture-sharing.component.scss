@@ -1,3 +1,9 @@
-.coming-soon {
-  font-family: Libre Baskerville;
+@import '../../tailwind-theme.css';
+
+.tab {
+  @apply text-accentGreen-500 text-center pt-4 pb-2 text-lg tracking-wider font-default;
+
+  &.selected {
+    @apply italic font-semibold;
+  }
 }

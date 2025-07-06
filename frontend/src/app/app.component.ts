@@ -16,7 +16,7 @@ export class AppComponent {
 
   router = inject(Router)
 
-  menuBarExtra?: 'add-picture'
+  menuBarExtra?: string
   navMenu = false
 
   ngOnInit() {

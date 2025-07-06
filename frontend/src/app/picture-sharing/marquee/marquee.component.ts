@@ -36,6 +36,8 @@ export class MarqueeComponent {
 
   resizeSubscription?: Subscription
 
+  scrollToIndex?: number
+
   ngOnInit() {
     this.screenWidth = this.previewContainerRef.nativeElement.clientWidth
     for (let i = 0; i < this.ON_SCREEN_COUNT; i++) {
@@ -73,8 +75,8 @@ export class MarqueeComponent {
 
   onPointerDown(event: PointerEvent) {
     this.mouseScrollData = { curX: event.x };
-    this.previewContainerRef.nativeElement.addEventListener('pointermove', this.mouseMoveEvent);
-    window.addEventListener('pointerup', this.moveEndEvent);
+    this.previewContainerRef.nativeElement.addEventListener('pointermove', this.mouseMoveEvent)
+    window.addEventListener('pointerup', this.moveEndEvent)
   }
 
   onPointerMove(event: PointerEvent) {
@@ -91,29 +93,35 @@ export class MarqueeComponent {
 
   scrollByCount(event: MouseEvent, count: number) {
     if (this.currentPicture) {
-      const newIndex = count + this.currentPicture.pictureIndex;
+      let newIndex 
+      if (!this.scrollToIndex) {
+        newIndex = count + this.currentPicture.pictureIndex;
+      } else {
+        newIndex = count + this.scrollToIndex
+      }
       if (0 <= newIndex && newIndex < this.pics.length) {
-        this.scrollToIndex(newIndex)
+        this.doScrollToIndex(newIndex)
       }
     }
     event.stopPropagation()
   }
 
   scrollByPositionMarker(event: MouseEvent, index: number) {
-    this.scrollToIndex(index)
+    this.doScrollToIndex(index)
     event.stopPropagation()
   }
 
-  scrollToIndex(index: number) {
-    if (this.currentPicture) {
+  doScrollToIndex(index: number) {
+    this.scrollToIndex = index
+    if (this.currentPicture && !this.scrollToInterval) {
       const speedPerMilli = this.screenWidth / 200
       let speed = speedPerMilli * 20
-      if (index === this.currentPicture.pictureIndex) {
+      if (this.scrollToIndex === this.currentPicture.pictureIndex) {
         if (this.currentPicture.translation > 0) {
           speed = -speed
         }
       } else {
-        if (index > this.currentPicture.pictureIndex) {
+        if (this.scrollToIndex > this.currentPicture.pictureIndex) {
           speed = -speed
         }
       }
@@ -122,12 +130,12 @@ export class MarqueeComponent {
       }
       this.scrollToInterval = setInterval(() => {
         if (this.currentPicture) {
-          if (this.currentPicture.pictureIndex === index) {
+          if (this.currentPicture.pictureIndex === this.scrollToIndex) {
             if (this.currentPicture.translation === 0) {
               clearTimeout(this.scrollToInterval)
               this.scrollToInterval = undefined
             } else {
-              const delta = this.getValidDelta(speed, this.currentPicture, index, index)
+              const delta = this.getValidDelta(speed, this.currentPicture, this.scrollToIndex, this.scrollToIndex)
               this.scroll(delta)
             }
           } else {
@@ -223,16 +231,15 @@ export class MarqueeComponent {
 
     if (this.currentPicture && this.mouseScrollData?.lastDelta) {
       if (this.mouseScrollData.lastDelta < -5) {
-        console.log('scroll to next')
         if (this.currentPicture.pictureIndex < this.pics.length - 1) {
-          this.scrollToIndex(this.currentPicture.pictureIndex + 1)
+          this.doScrollToIndex(this.currentPicture.pictureIndex + 1)
         }
       } else if (this.mouseScrollData.lastDelta > 5) {
         if (this.currentPicture.pictureIndex != 0) {
-          this.scrollToIndex(this.currentPicture.pictureIndex - 1)
+          this.doScrollToIndex(this.currentPicture.pictureIndex - 1)
         }
       } else {
-        this.scrollToIndex(this.currentPicture.pictureIndex)
+        this.doScrollToIndex(this.currentPicture.pictureIndex)
       }
     }
   }

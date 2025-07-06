@@ -1,0 +1,5 @@
+<div #pageContainer class="w-full grid">
+  @for (pic of pictures; track $index) {
+    <img [src]="pic.thumbnailSrc" class="w-full h-full object-cover object-center p-1" (click)="onClick.emit(pic)">
+  }
+</div>

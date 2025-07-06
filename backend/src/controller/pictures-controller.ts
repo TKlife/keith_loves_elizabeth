@@ -1,6 +1,6 @@
 import { GetBucketLocationCommand, ListObjectsV2Command, PutObjectCommand, S3Client } from "@aws-sdk/client-s3";
 import crypto from 'crypto';
-import { RequestHandler } from "express";
+import { Request, RequestHandler } from "express";
 import imageThumbnail from 'image-thumbnail';
 import sizeOf from 'image-size'
 import sharp from 'sharp'
@@ -9,6 +9,7 @@ const s3 = new S3Client({})
 
 const KEITH_LOVES_ELIZABETH_BUCKET_NAME = 'keithloveselizabeth'
 const PICTURE_DIRECTORY = 'pictures'
+const LANDING_DIRECTORY = 'landing'
 const THUMBNAIL_DRECTORY = PICTURE_DIRECTORY + '/thumbnails' 
 
 const addPictures: RequestHandler = async (req, res, next) => {
@@ -67,17 +68,16 @@ const addPictures: RequestHandler = async (req, res, next) => {
 }
 
 const getPictureThumbnails: RequestHandler = async (req, res, next) => {
-  console.log(req.query['max'])
+  const { max, startAfter } = getPictureQuerys(req)
   const thumbnails = await s3.send(new ListObjectsV2Command({
     Bucket: KEITH_LOVES_ELIZABETH_BUCKET_NAME,
     Prefix: THUMBNAIL_DRECTORY,
-    // MaxKeys: body.max,
-    // StartAfter: body.startAfter
+    MaxKeys: max,
+    StartAfter: startAfter,
   }))
   const bucket = await s3.send(new GetBucketLocationCommand({
     Bucket: KEITH_LOVES_ELIZABETH_BUCKET_NAME
   }))
-  console.log(bucket)
   const url = `https://${KEITH_LOVES_ELIZABETH_BUCKET_NAME}.s3.${bucket.LocationConstraint}.amazonaws.com`
   const urls: {url: string, thumbnailPath: string, picturePath: string}[] = []
   if (thumbnails?.Contents) {
@@ -85,6 +85,27 @@ const getPictureThumbnails: RequestHandler = async (req, res, next) => {
       if (thumbnail.Key) {
         const pathParts = thumbnail.Key?.split('/')
         urls.push({url, thumbnailPath: thumbnail.Key, picturePath: `${pathParts[0]}/${pathParts[2]}`})
+      }
+    }
+  }
+  res.status(200).json(urls)
+}
+
+
+const getLandingPictures: RequestHandler = async (req, res, next) => {
+  const pictures = await s3.send(new ListObjectsV2Command({
+    Bucket: KEITH_LOVES_ELIZABETH_BUCKET_NAME,
+    Prefix: LANDING_DIRECTORY,
+  }))
+  const bucket = await s3.send(new GetBucketLocationCommand({
+    Bucket: KEITH_LOVES_ELIZABETH_BUCKET_NAME
+  }))
+  const url = `https://${KEITH_LOVES_ELIZABETH_BUCKET_NAME}.s3.${bucket.LocationConstraint}.amazonaws.com`
+  const urls: string[] = []
+  if (pictures?.Contents) {
+    for (const picture of pictures.Contents) {
+      if (picture.Key) {
+        urls.push(url)
       }
     }
   }
@@ -102,7 +123,24 @@ async function getImageOrientation(buffer: Buffer): Promise<'landscape' | 'portr
   }
 }
 
+function getPictureQuerys(req: Request) {
+  let maxString = req.query['max']
+  let max: number | undefined = undefined
+  if (typeof maxString === 'string') {
+    max = parseInt(maxString)
+  }
+
+  let startAfterString = req.query['startAfter']
+  let startAfter: string | undefined
+  if (typeof startAfterString === 'string') {
+    startAfter = startAfterString
+  } 
+
+  return { max, startAfter }
+}
+
 export {
   addPictures,
-  getPictureThumbnails
+  getPictureThumbnails,
+  getLandingPictures
 };
